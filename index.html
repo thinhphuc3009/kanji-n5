@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Học Kanji N5 — Full</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* ===================== BASE ===================== */
+body{
+    margin:0;
+    font-family: "Inter", sans-serif;
+    background:#f3f5fa;
+    color:#222;
+}
+
+h2{
+    margin:10px 0 20px;
+    color:#334;
+    font-size:26px;
+    font-weight:700;
+    text-align:center;
+}
+
+.page{
+    display:none;
+    padding:20px;
+    max-width:900px;
+    margin:auto;
+}
+
+button{
+    padding:10px 16px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:600;
+    background:#5566ff;
+    color:white;
+    transition:0.2s;
+}
+button:hover{
+    opacity:0.85;
+}
+
+body{
+    margin:0;
+    font-family: "Inter", sans-serif;
+    background:#f3f5fa;
+    color:#222;
+}
+
+h2{
+    margin:10px 0 20px;
+    color:#334;
+    font-size:26px;
+    font-weight:700;
+    text-align:center;
+}
+
+/* ===================== MENU ===================== */
+#menu{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:15px;
+    background:white;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+#menu button{
+    background:#ffffff;
+    color:#333;
+    border:2px solid #5566ff;
+}
+#menu button:hover{
+    background:#5566ff;
+    color:white;
+}
+
+/* ===================== VOCAB PAGE ===================== */
+#searchBox{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:2px solid #ccd3ff;
+    font-size:16px;
+    margin-bottom:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 7px rgba(0,0,0,0.08);
+}
+
+th, td{
+    padding:12px;
+    text-align:left;
+    font-size:16px;
+    border-bottom:1px solid #eee;
+}
+th{
+    background:#5566ff;
+    color:white;
+    font-weight:700;
+}
+
+/* ===================== FLASHCARD PAGE ===================== */
+#flashGrid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px,1fr));
+    gap:15px;
+}
+
+.flash{
+    width:100%;
+    height:150px;
+    background:#ffffff;
+    border-radius:14px;
+    perspective:800px;
+    cursor:pointer;
+}
+
+.flash-inner{
+    width:100%;
+    height:100%;
+    position:relative;
+    transition:transform 0.45s ease;
+    transform-style:preserve-3d;
+}
+
+.flash.flipped .flash-inner{
+    transform:rotateY(180deg);
+}
+
+.flash-face{
+    position:absolute;
+    width:100%;
+    height:100%;
+    backface-visibility:hidden;
+    border-radius:14px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+}
+
+.front{
+    background:white;
+    color:#222;
+    font-size:40px;
+}
+.back{
+    background:#5566ff;
+    color:white;
+    transform:rotateY(180deg);
+    font-size:22px;
+}
+
+/* ===================== TEST PAGE ===================== */
+#quizBox{
+    background:white;
+    padding:28px;
+    border-radius:16px;
+    box-shadow:0 8px 30px rgba(20,30,80,0.08);
+    max-width:780px;
+    margin:auto;
+    min-height:140px;
+    transition:0.18s;
+}
+
+.qTitle{
+    font-size:22px;
+    font-weight:800;
+    margin-bottom:16px;
+    color:#172a4a;
+    text-align:left;
+}
+
+/* progress */
+.progressWrap{
+    height:10px;
+    background:#eef2ff;
+    border-radius:10px;
+    overflow:hidden;
+    margin:8px 0 16px;
+}
+.progressBar{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#6a7bff,#3ecf8e);
+    transition:width 0.4s ease;
+}
+
+/* answer buttons */
+.answers{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:6px;
+}
+.answer{
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid rgba(85,102,255,0.12);
+    background:#fbfbff;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:700;
+    color:#223;
+    box-shadow:0 4px 14px rgba(80,90,200,0.04);
+    transition:transform 0.12s ease, box-shadow 0.12s ease, background 0.18s;
+    user-select:none;
+}
+.answer:hover{ transform:translateY(-3px); box-shadow:0 8px 24px rgba(80,90,200,0.08); }
+.answer.selected{ outline:3px solid rgba(85,102,255,0.12); background:#eef2ff; }
+.answer.correct{ background:linear-gradient(90deg,#e6fff0,#c9ffd6); border-color:#00c969; color:#075a2e; box-shadow:none; }
+.answer.wrong{ background:linear-gradient(90deg,#fff0f0,#ffd6d6); border-color:#ff4444; color:#4b120f; box-shadow:none; }
+
+/* control buttons */
+#nextBtn, #restartBtn{
+    background:#5566ff;
+    padding:12px 26px;
+    font-size:17px;
+    border-radius:12px;
+    color:white;
+    border:none;
+    margin:8px;
+    font-weight:800;
+    box-shadow:0 8px 20px rgba(85,102,255,0.18);
+}
+#restartBtn{ background:#ff7a45; box-shadow:0 8px 20px rgba(255,122,69,0.14); }
+#nextBtn[disabled]{ opacity:0.6; transform:none; cursor:not-allowed; box-shadow:none; }
+
+/* score */
+.scoreBox{
+    font-size:30px;
+    font-weight:900;
+    color:#2d3bff;
+    text-align:center;
+    margin-top:20px;
+}
+
+/* small responsive */
+@media (max-width:520px){
+    .answer{ font-size:16px; padding:12px; }
+    #quizBox{ padding:18px; }
+}
+
+
+</style>
+</head>
+
+<body>
+
+<!-- ===================== MENU ===================== -->
+<div id="menu">
+    <button onclick="showPage('vocab')">📗 Từ vựng</button>
+    <button onclick="showPage('flash')">🎴 Flashcard</button>
+    <button onclick="showPage('test')">📝 Bài test</button>
+</div>
+
+<!-- ===================== PAGE: TỪ VỰNG ===================== -->
+<div id="vocab" class="page">
+    <h2>📗 Danh sách Kanji N5</h2>
+    <input id="searchBox" placeholder="Tìm theo Kanji / Hán Việt / Nghĩa...">
+    <table>
+        <thead>
+            <tr>
+                <th>Kanji</th>
+                <th>Hán Việt</th>
+                <th>Nghĩa</th>
+            </tr>
+        </thead>
+        <tbody id="vocabBody"></tbody>
+    </table>
+</div>
+
+<!-- ===================== PAGE: FLASHCARD ===================== -->
+<div id="flash" class="page">
+    <h2>🎴 Flashcard Kanji N5</h2>
+
+    <div style="text-align:center; margin-bottom:15px;">
+        <button onclick="shuffleFlash()">🔀 Trộn thẻ</button>
+        <button onclick="showAllFront()">🔄 Reset</button>
+    </div>
+
+    <div id="flashGrid"></div>
+</div>
+
+<!-- ===================== PAGE: TEST 10 CÂU ===================== -->
+<div id="test" class="page">
+    <h2>📝 Bài test 10 câu</h2>
+
+    <div id="quizBox"></div>
+
+    <div style="text-align:center; margin-top:18px;">
+        <button id="nextBtn" onclick="nextQuestion()" style="display:none;">➡ Tiếp theo</button>
+        <button id="restartBtn" onclick="startQuiz()" style="display:none;">🔁 Làm lại</button>
+    </div>
+
+    <div id="score" class="scoreBox"></div>
+</div>
+
+<script>
+/* =======================================
+   DỮ LIỆU KANJI (bạn dán list 103 chữ vào)
+========================================== */
+const kanjiData = [
+    {kanji:'日', hv:'nhật', on:'ニチ・ジツ', kun:'ひ・び・か', mean:'ngày, mặt trời', vocab:['日(ひ)','日本(にほん)','日曜日(にちようび)']},
+    {kanji:'月', hv:'nguyệt', on:'ゲツ・ガツ', kun:'つき', mean:'tháng, mặt trăng', vocab:['月(つき)','月曜日(げつようび)','今月(こんげつ)']},
+    {kanji:'火', hv:'hoả', on:'カ', kun:'ひ', mean:'lửa', vocab:['火(ひ)','火曜日(かようび)']},
+    {kanji:'水', hv:'thuỷ', on:'スイ', kun:'みず', mean:'nước', vocab:['水(みず)','水曜日(すいようび)']},
+    {kanji:'木', hv:'mộc', on:'モク', kun:'き', mean:'cây, gỗ', vocab:['木(き)','木曜日(もくようび)']},
+    {kanji:'金', hv:'kim', on:'キン', kun:'かね', mean:'vàng, tiền', vocab:['金(かね)','金曜日(きんようび)']},
+    {kanji:'土', hv:'thổ', on:'ド', kun:'つち', mean:'đất', vocab:['土(つち)','土曜日(どようび)']},
+    {kanji:'本', hv:'bản', on:'ホン', kun:'もと', mean:'sách, gốc', vocab:['本(ほん)','日本(にほん)']},
+
+    {kanji:'人', hv:'nhân', on:'ジン・ニン', kun:'ひと', mean:'người', vocab:['人(ひと)','日本人(にほんじん)']},
+    {kanji:'男', hv:'nam', on:'ダン', kun:'おとこ', mean:'đàn ông', vocab:['男(おとこ)']},
+    {kanji:'女', hv:'nữ', on:'ジョ', kun:'おんな', mean:'phụ nữ', vocab:['女(おんな)']},
+    {kanji:'子', hv:'tử', on:'シ', kun:'こ', mean:'trẻ con', vocab:['子ども(こども)']},
+    {kanji:'父', hv:'phụ', on:'フ', kun:'ちち', mean:'cha', vocab:['父(ちち)']},
+    {kanji:'母', hv:'mẫu', on:'ボ', kun:'はは', mean:'mẹ', vocab:['母(はは)']},
+    {kanji:'兄', hv:'huynh', on:'ケイ', kun:'あに', mean:'anh trai', vocab:['兄(あに)']},
+    {kanji:'姉', hv:'tỉ', on:'シ', kun:'あね', mean:'chị gái', vocab:['姉(あね)']},
+    {kanji:'弟', hv:'đệ', on:'テイ', kun:'おとうと', mean:'em trai', vocab:['弟(おとうと)']},
+    {kanji:'妹', hv:'muội', on:'マイ', kun:'いもうと', mean:'em gái', vocab:['妹(いもうと)']},
+
+    {kanji:'山', hv:'sơn', on:'サン', kun:'やま', mean:'núi', vocab:['山(やま)','富士山(ふじさん)']},
+    {kanji:'川', hv:'xuyên', on:'セン', kun:'かわ', mean:'sông', vocab:['川(かわ)']},
+    {kanji:'田', hv:'điền', on:'デン', kun:'た', mean:'ruộng', vocab:['田んぼ(たんぼ)']},
+    {kanji:'空', hv:'không', on:'クウ', kun:'そら', mean:'bầu trời', vocab:['空(そら)']},
+    {kanji:'天', hv:'thiên', on:'テン', kun:'あま', mean:'trời', vocab:['天気(てんき)']},
+    {kanji:'気', hv:'khí', on:'キ', kun:'', mean:'khí, tinh thần', vocab:['元気(げんき)','天気(てんき)']},
+
+    {kanji:'花', hv:'hoa', on:'カ', kun:'はな', mean:'hoa', vocab:['花(はな)']},
+    {kanji:'草', hv:'thảo', on:'ソウ', kun:'くさ', mean:'cỏ', vocab:['草(くさ)']},
+    {kanji:'虫', hv:'trùng', on:'チュウ', kun:'むし', mean:'côn trùng', vocab:['虫(むし)']},
+    {kanji:'犬', hv:'khuyển', on:'ケン', kun:'いぬ', mean:'chó', vocab:['犬(いぬ)']},
+    {kanji:'牛', hv:'ngưu', on:'ギュウ', kun:'うし', mean:'bò', vocab:['牛(うし)']},
+    {kanji:'馬', hv:'mã', on:'バ', kun:'うま', mean:'ngựa', vocab:['馬(うま)']},
+
+    {kanji:'魚', hv:'ngư', on:'ギョ', kun:'さかな', mean:'cá', vocab:['魚(さかな)']},
+    {kanji:'鳥', hv:'điểu', on:'チョウ', kun:'とり', mean:'chim', vocab:['鳥(とり)']},
+    {kanji:'雨', hv:'vũ', on:'ウ', kun:'あめ', mean:'mưa', vocab:['雨(あめ)']},
+    {kanji:'風', hv:'phong', on:'フウ', kun:'かぜ', mean:'gió', vocab:['風(かぜ)']},
+    {kanji:'雪', hv:'tuyết', on:'セツ', kun:'ゆき', mean:'tuyết', vocab:['雪(ゆき)']},
+    {kanji:'電', hv:'điện', on:'デン', kun:'', mean:'điện', vocab:['電気(でんき)']},
+
+    {kanji:'音', hv:'âm', on:'オン', kun:'おと', mean:'âm thanh', vocab:['音(おと)']},
+    {kanji:'楽', hv:'lạc', on:'ガク', kun:'たのしい', mean:'vui', vocab:['楽しい(たのしい)']},
+    {kanji:'力', hv:'lực', on:'リョク', kun:'ちから', mean:'sức mạnh', vocab:['力(ちから)']},
+    {kanji:'体', hv:'thể', on:'タイ', kun:'からだ', mean:'cơ thể', vocab:['体(からだ)']},
+    {kanji:'心', hv:'tâm', on:'シン', kun:'こころ', mean:'trái tim', vocab:['心(こころ)']},
+
+    {kanji:'手', hv:'thủ', on:'シュ', kun:'て', mean:'tay', vocab:['手(て)']},
+    {kanji:'足', hv:'túc', on:'ソク', kun:'あし', mean:'chân', vocab:['足(あし)']},
+    {kanji:'目', hv:'mục', on:'モク', kun:'め', mean:'mắt', vocab:['目(め)']},
+    {kanji:'口', hv:'khẩu', on:'コウ', kun:'くち', mean:'miệng', vocab:['口(くち)']},
+    {kanji:'耳', hv:'nhĩ', on:'ジ', kun:'みみ', mean:'tai', vocab:['耳(みみ)']},
+
+    {kanji:'白', hv:'bạch', on:'ハク', kun:'しろ', mean:'trắng', vocab:['白い(しろい)']},
+    {kanji:'青', hv:'thanh', on:'セイ', kun:'あお', mean:'xanh', vocab:['青い(あおい)']},
+    {kanji:'赤', hv:'xích', on:'セキ', kun:'あか', mean:'đỏ', vocab:['赤い(あかい)']},
+    {kanji:'黒', hv:'hắc', on:'コク', kun:'くろ', mean:'đen', vocab:['黒い(くろい)']},
+
+    {kanji:'語', hv:'ngữ', on:'ゴ', kun:'かたる', mean:'ngôn ngữ', vocab:['日本語(にほんご)','英語(えいご)']},
+    {kanji:'文', hv:'văn', on:'ブン', kun:'ふみ', mean:'văn, câu', vocab:['文(ぶん)']},
+    {kanji:'校', hv:'hiệu', on:'コウ', kun:'', mean:'trường học', vocab:['学校(がっこう)']},
+
+    {kanji:'聞', hv:'văn', on:'ブン', kun:'きく', mean:'nghe', vocab:['聞く(きく)']},
+    {kanji:'言', hv:'ngôn', on:'ゲン', kun:'いう', mean:'nói', vocab:['言う(いう)']},
+    {kanji:'読', hv:'độc', on:'ドク', kun:'よむ', mean:'đọc', vocab:['読む(よむ)']},
+    {kanji:'書', hv:'thư', on:'ショ', kun:'かく', mean:'viết', vocab:['書く(かく)']},
+    {kanji:'見', hv:'kiến', on:'ケン', kun:'みる', mean:'nhìn', vocab:['見る(みる)']},
+
+    {kanji:'食', hv:'thực', on:'ショク', kun:'たべる', mean:'ăn', vocab:['食べる(たべる)']},
+    {kanji:'飲', hv:'ẩm', on:'イン', kun:'のむ', mean:'uống', vocab:['飲む(のむ)']},
+
+    {kanji:'買', hv:'mãi', on:'バイ', kun:'かう', mean:'mua', vocab:['買う(かう)']},
+    {kanji:'売', hv:'mại', on:'バイ', kun:'うる', mean:'bán', vocab:['売る(うる)']},
+
+    {kanji:'起', hv:'khởi', on:'キ', kun:'おきる', mean:'thức dậy', vocab:['起きる(おきる)']},
+    {kanji:'歩', hv:'bộ', on:'ホ', kun:'あるく', mean:'đi bộ', vocab:['歩く(あるく)']},
+    {kanji:'走', hv:'tẩu', on:'ソウ', kun:'はしる', mean:'chạy', vocab:['走る(はしる)']},
+
+    {kanji:'入', hv:'nhập', on:'ニュウ', kun:'はいる', mean:'vào', vocab:['入る(はいる)']},
+    {kanji:'出', hv:'xuất', on:'シュツ', kun:'でる・だす', mean:'ra', vocab:['出る(でる)']},
+
+    {kanji:'高', hv:'cao', on:'コウ', kun:'たかい', mean:'cao, đắt', vocab:['高い(たかい)']},
+    {kanji:'安', hv:'an', on:'アン', kun:'やすい', mean:'rẻ, an toàn', vocab:['安い(やすい)']},
+    {kanji:'新', hv:'tân', on:'シン', kun:'あたらしい', mean:'mới', vocab:['新しい(あたらしい)']},
+    {kanji:'古', hv:'cổ', on:'コ', kun:'ふるい', mean:'cũ', vocab:['古い(ふるい)']},
+
+    {kanji:'多', hv:'đa', on:'タ', kun:'おおい', mean:'nhiều', vocab:['多い(おおい)']},
+    {kanji:'少', hv:'thiểu', on:'ショウ', kun:'すくない', mean:'ít', vocab:['少ない(すくない)']},
+
+    {kanji:'長', hv:'trường', on:'チョウ', kun:'ながい', mean:'dài', vocab:['長い(ながい)']},
+    {kanji:'短', hv:'đoản', on:'タン', kun:'みじかい', mean:'ngắn', vocab:['短い(みじかい)']},
+
+    {kanji:'明', hv:'minh', on:'メイ', kun:'あかるい', mean:'sáng', vocab:['明るい(あかるい)']},
+    {kanji:'暗', hv:'ám', on:'アン', kun:'くらい', mean:'tối', vocab:['暗い(くらい)']},
+
+    {kanji:'強', hv:'cường', on:'キョウ', kun:'つよい', mean:'mạnh', vocab:['強い(つよい)']},
+    {kanji:'弱', hv:'nhược', on:'ジャク', kun:'よわい', mean:'yếu', vocab:['弱い(よわい)']},
+
+    {kanji:'友', hv:'hữu', on:'ユウ', kun:'とも', mean:'bạn', vocab:['友達(ともだち)']},
+
+    {kanji:'毎', hv:'mỗi', on:'マイ', kun:'', mean:'mỗi', vocab:['毎日(まいにち)']},
+    {kanji:'週', hv:'chu', on:'シュウ', kun:'', mean:'tuần', vocab:['今週(こんしゅう)']},
+    {kanji:'曜', hv:'diệu', on:'ヨウ', kun:'', mean:'thứ', vocab:['日曜日(にちようび)']},
+
+    {kanji:'午', hv:'ngọ', on:'ゴ', kun:'', mean:'giữa ngày', vocab:['午前(ごぜん)','午後(ごご)']},
+    {kanji:'前', hv:'tiền', on:'ゼン', kun:'まえ', mean:'trước', vocab:['前(まえ)']},
+    {kanji:'後', hv:'hậu', on:'ゴ・コウ', kun:'うしろ', mean:'sau', vocab:['後ろ(うしろ)']},
+];
+
+
+/* =======================================
+   CHUYỂN TRANG
+========================================== */
+function showPage(id){
+    document.querySelectorAll(".page").forEach(p=>p.style.display="none");
+    document.getElementById(id).style.display="block";
+
+    if(id==="flash") renderFlashcards();
+    if(id==="test") initTestPage();
+
+}
+showPage("vocab");
+
+/* =======================================
+   TỪ VỰNG + TÌM KIẾM
+========================================== */
+function renderVocab(list = kanjiData){
+    const body = document.getElementById("vocabBody");
+    body.innerHTML = "";
+
+    list.forEach(k=>{
+        body.innerHTML += `
+            <tr>
+                <td>${k.kanji}</td>
+                <td>${k.hv}</td>
+                <td>${k.mean}</td>
+            </tr>`;
+    });
+}
+renderVocab();
+
+document.getElementById("searchBox").oninput = e=>{
+    const s = e.target.value.toLowerCase();
+    const filtered = kanjiData.filter(k =>
+        k.kanji.includes(s) ||
+        k.hv.toLowerCase().includes(s) ||
+        k.mean.toLowerCase().includes(s)
+    );
+    renderVocab(filtered);
+};
+
+/* =======================================
+   FLASHCARD
+========================================== */
+function renderFlashcards(list = kanjiData){
+    const box = document.getElementById("flashGrid");
+    box.innerHTML = "";
+
+    list.forEach(k=>{
+        const card = document.createElement("div");
+        card.className = "flash";
+
+        card.innerHTML = `
+            <div class="flash-inner">
+                <div class="flash-face front">${k.kanji}<br><span style="font-size:15px;">${k.hv}</span></div>
+                <div class="flash-face back">${k.mean}</div>
+            </div>
+        `;
+        card.onclick = ()=> card.classList.toggle("flipped");
+
+        box.appendChild(card);
+    });
+}
+
+function shuffleFlash(){
+    renderFlashcards([...kanjiData].sort(()=>Math.random()-0.5));
+}
+function showAllFront(){
+    document.querySelectorAll(".flash").forEach(c=>c.classList.remove("flipped"));
+}
+
+/* =======================================
+   TEST TỪNG CÂU (TRẮC NGHIỆM) — BẢN KHÔNG LỖI
+========================================== */
+let quiz = [];
+let current = 0;
+let scoreCount = 0;
+
+function initTestPage() {
+    startQuiz();
+}
+
+function startQuiz() {
+    quiz = [...kanjiData].sort(() => Math.random() - 0.5).slice(0, 10);
+    current = 0;
+    scoreCount = 0;
+
+    document.getElementById("score").innerHTML = "";
+    document.getElementById("restartBtn").style.display = "none";
+    document.getElementById("nextBtn").style.display = "inline-block";
+    document.getElementById("nextBtn").disabled = false;
+    document.getElementById("nextBtn").textContent = "➡ Tiếp theo";
+
+    loadQuestion();
+}
+
+function loadQuestion() {
+    const q = quiz[current];
+
+    // Tạo 3 đáp án sai (dựa trên mean)
+    let wrong = [...kanjiData]
+        .filter(k => k.mean !== q.mean)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3)
+        .map(k => k.mean);
+
+    let answers = [...wrong, q.mean].sort(() => Math.random() - 0.5);
+
+    document.getElementById("quizBox").innerHTML = `
+        <div class="qTitle"><b>Câu ${current + 1}/10:</b> <span style="font-weight:700; font-size:22px;">${q.kanji}</span> <small style="color:#567; font-weight:600; margin-left:8px;">(${q.hv})</small></div>
+
+        <div class="progressWrap"><div class="progressBar" style="width:${((current)/10)*100}%;"></div></div>
+
+        <div style="font-size:15px; color:#445; margin-bottom:8px;">Chọn nghĩa đúng:</div>
+
+        <div class="answers">
+            ${answers.map(a => `<div class="answer" data-value="${a}">${a}</div>`).join("")}
+        </div>
+    `;
+
+    // chọn đáp án khi click
+    document.querySelectorAll("#quizBox .answer").forEach(el=>{
+        el.onclick = () => {
+            // nếu đã reveal (có class correct/wrong) thì ignore
+            if (document.querySelector("#quizBox .answer.correct")) return;
+
+            document.querySelectorAll("#quizBox .answer").forEach(x=>x.classList.remove("selected"));
+            el.classList.add("selected");
+        };
+    });
+
+    // ẩn restart, enable next
+    document.getElementById("restartBtn").style.display = "none";
+    document.getElementById("nextBtn").disabled = false;
+}
+
+function nextQuestion() {
+    const selected = document.querySelector("#quizBox .answer.selected");
+
+    if (!selected) {
+        alert("Bạn cần chọn 1 đáp án!");
+        return;
+    }
+
+    // disable further selection and show feedback
+    document.querySelectorAll("#quizBox .answer").forEach(a=>a.style.pointerEvents="none");
+
+    const correctValue = quiz[current].mean;
+    if (selected.dataset.value === correctValue) {
+        scoreCount++;
+        selected.classList.add("correct");
+    } else {
+        selected.classList.add("wrong");
+        // highlight đúng
+        const correctEl = Array.from(document.querySelectorAll("#quizBox .answer")).find(x=>x.dataset.value===correctValue);
+        if (correctEl) correctEl.classList.add("correct");
+    }
+
+    // update progress bar to include current answered
+    const pb = document.querySelector("#quizBox .progressBar");
+    if (pb) pb.style.width = `${((current+1)/10)*100}%`;
+
+    current++;
+
+    // nếu vẫn còn câu, chờ 700ms rồi chuyển hoặc bật nút tiếp
+    if (current >= 10) {
+        // show final score after short delay
+        setTimeout(()=> finishQuiz(),800);
+    } else {
+        // next question after short delay
+        setTimeout(()=> loadQuestion(),700);
+    }
+}
+
+function finishQuiz() {
+    document.getElementById("quizBox").innerHTML = "";
+    document.getElementById("nextBtn").style.display = "none";
+
+    document.getElementById("score").innerHTML =
+        `🎉 Bạn đúng <b>${scoreCount}/10</b>`;
+
+    document.getElementById("restartBtn").style.display = "inline-block";
+}
+
+</script>
+
+</body>
+</html>
